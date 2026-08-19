@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function HomeView({ onExplore }) {
-
   const brands = [
     { name: 'adidas', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/adidas.svg' },
     { name: 'Nike', logo: 'https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/nike.svg' },
@@ -43,11 +42,16 @@ export default function HomeView({ onExplore }) {
     ],
   ];
 
+ 
+  const baseUrl = import.meta.env.BASE_URL;
+
   return (
     <div className="bg-black text-white min-h-screen flex flex-col justify-between overflow-hidden">
       
+      {/* Hero Section */}
       <section className="relative min-h-[85vh] w-full flex items-center justify-center text-center px-4 sm:px-6">
         
+        {/* Background Video */}
         <video
           autoPlay
           loop
@@ -55,9 +59,22 @@ export default function HomeView({ onExplore }) {
           playsInline
           className="absolute inset-0 h-full w-full object-cover z-0"
         >
-          <source src="/videos/banner.mp4" type="video/mp4" />
+          <source src={`${baseUrl}videos/banner.mp4`} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+
+        <div className="absolute inset-0 bg-black/60 z-10" />
+
+        {/* Hero Content */}
+        <div className="relative z-20 max-w-4xl mx-auto py-20">
+          
+          
+         
+
+         
+          
+         
+        </div>
 
       </section>
 

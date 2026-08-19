@@ -1,11 +1,23 @@
 import React, { useState } from "react";
 
-export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
+export default function AdminView({ products = [], onAddProduct, onDeleteProduct }) {
   const [formData, setFormData] = useState({
     title: "",
     category: "football",
     price: "",
   });
+
+
+  const baseUrl = import.meta.env.BASE_URL;
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "https://via.placeholder.com/200x150?text=No+Image";
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+    const cleanPath = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+    return `${baseUrl}${cleanPath}`;
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,7 +47,7 @@ export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
       <h1 className="text-3xl font-extrabold text-cyan-400 mb-8">Admin Dashboard</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
+        {/* Form Add Product */}
         <div className="bg-zinc-900 border border-zinc-800 p-6 rounded-2xl h-fit">
           <h2 className="text-xl font-bold mb-4 text-white">Add New Product</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -79,7 +91,6 @@ export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
               />
             </div>
 
-
             {formData.title && (
               <div className="mt-2">
                 <span className="text-xs text-zinc-400 block mb-1">
@@ -87,7 +98,7 @@ export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
                 </span>
                 <div className="w-full h-32 bg-white rounded-lg p-2 flex items-center justify-center overflow-hidden border border-zinc-700">
                   <img
-                    src={`/image/${formData.title.trim()}.png`}
+                    src={getImageUrl(`/image/${formData.title.trim()}.png`)}
                     alt="Auto Preview"
                     className="max-h-full max-w-full object-contain"
                     onError={(e) => {
@@ -108,7 +119,7 @@ export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
           </form>
         </div>
 
-
+        {/* Inventory Table */}
         <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 p-6 rounded-2xl">
           <h2 className="text-xl font-bold mb-4 text-white">Inventory Management</h2>
           <div className="overflow-x-auto">
@@ -128,7 +139,7 @@ export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
                     <td className="py-3 px-2">
                       <div className="w-12 h-12 bg-white rounded-md p-1 flex items-center justify-center">
                         <img
-                          src={item.image}
+                          src={getImageUrl(item.image)}
                           alt={item.title}
                           className="max-h-full max-w-full object-contain"
                           onError={(e) => {
@@ -140,7 +151,9 @@ export default function AdminView({ products, onAddProduct, onDeleteProduct }) {
                     </td>
                     <td className="py-3 px-2 font-semibold text-white">{item.title}</td>
                     <td className="py-3 px-2 text-zinc-400 capitalize">{item.category}</td>
-                    <td className="py-3 px-2 text-cyan-400 font-bold">${item.price.toFixed(2)}</td>
+                    <td className="py-3 px-2 text-cyan-400 font-bold">
+                      ${typeof item.price === "number" ? item.price.toFixed(2) : item.price}
+                    </td>
                     <td className="py-3 px-2 text-right">
                       <button
                         onClick={() => onDeleteProduct(item.id)}

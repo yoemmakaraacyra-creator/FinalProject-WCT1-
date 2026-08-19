@@ -7,9 +7,20 @@ export default function ShopView({ products = [], onOpenBuy }) {
     (item) => item.category === selectedCategory
   );
 
+
+  const baseUrl = import.meta.env.BASE_URL;
+
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "https://via.placeholder.com/200x150?text=No+Image";
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+    const cleanPath = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
+    return `${baseUrl}${cleanPath}`;
+  };
+
   return (
     <section className="py-10 sm:py-14 px-4 sm:px-6 max-w-7xl mx-auto text-white">
-      {/* Category Tabs */}
       <div className="flex justify-center gap-4 mb-10">
         <button
           onClick={() => setSelectedCategory("football")}
@@ -33,18 +44,17 @@ export default function ShopView({ products = [], onOpenBuy }) {
         </button>
       </div>
 
-      {/* Products Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.map((product) => (
           <div
             key={product.id}
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between hover:border-zinc-700 transition-all group"
           >
-            {/* White container lets JPEG product images display normally */}
+  
             <div className="w-full h-48 bg-white rounded-xl mb-4 p-2 flex items-center justify-center overflow-hidden">
               <img
-                src={product.image}
-                alt={product.title}
+                src={getImageUrl(product.image)}
+                alt={product.title || product.name}
                 className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -54,14 +64,16 @@ export default function ShopView({ products = [], onOpenBuy }) {
             </div>
 
             <div>
-              <h3 className="font-bold text-lg mb-1 text-white">{product.title}</h3>
+              <h3 className="font-bold text-lg mb-1 text-white">
+                {product.title || product.name}
+              </h3>
               <p className="text-cyan-400 font-extrabold text-xl mb-4">
-                ${product.price.toFixed(2)}
+                ${typeof product.price === "number" ? product.price.toFixed(2) : product.price}
               </p>
             </div>
 
             <button
-              onClick={onOpenBuy}
+              onClick={() => onOpenBuy(product)}
               className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 rounded-lg text-sm transition-all cursor-pointer"
             >
               Buy Now
