@@ -23,7 +23,7 @@ export default function AppNavbar({ onOpenLogin }) {
           <Link to="/" className="text-zinc-400 hover:text-cyan-400 transition-colors">Home</Link>
           <Link to="/about" className="text-zinc-400 hover:text-cyan-400 transition-colors">About</Link>
           <Link to="/shop" className="text-zinc-400 hover:text-cyan-400 transition-colors">Shop</Link>
-          <Link to="/admin" className="text-zinc-400 hover:text-cyan-400 transition-colors">Admin</Link>
+          <Link to="/admin" className="text-zinc-400 hover:text-cyan-400 transition-colors">Dashboard</Link>
           <Link to="/services" className="text-zinc-400 hover:text-cyan-400 transition-colors">Services</Link>
           <Link to="/contact" className="text-zinc-400 hover:text-cyan-400 transition-colors">Contact</Link>
           

@@ -13,11 +13,12 @@ import AboutView from './views/AboutView';
 import ShopView from './views/ShopView';
 import ServicesView from './views/ServicesView';
 import ContactView from './views/ContactView';
-import AdminView from './views/AdminView';
+import Dashboard from './views/Dashboard';
 
 export default function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true); 
@@ -26,7 +27,7 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
         const adminEmail = "yoemmakaraacyra@gmail.com";
-        const isUserAdmin = currentUser.email?.toLowerCase() === adminEmail;
+        const isUserAdmin = currentUser.email?.toLowerCase() === adminEmail.toLowerCase();
         const userRef = doc(db, "users", currentUser.uid);
 
         try {
@@ -65,6 +66,11 @@ export default function App() {
   const handleLogout = async () => {
     await signOut(auth);
     setUser(null);
+  };
+
+  const handleOpenBuy = (product) => {
+    setSelectedProduct(product);
+    setShowBuy(true);
   };
 
   const [products, setProducts] = useState([
@@ -121,7 +127,7 @@ export default function App() {
             <Route path="/about" element={<AboutView />} />
             <Route 
               path="/shop" 
-              element={<ShopView products={products} onOpenBuy={() => setShowBuy(true)} />} 
+              element={<ShopView products={products} onOpenBuy={handleOpenBuy} />} 
             />
             <Route path="/services" element={<ServicesView />} />
             <Route path="/contact" element={<ContactView />} />
@@ -130,7 +136,8 @@ export default function App() {
               path="/admin" 
               element={
                 user && user.role === 'admin' ? (
-                  <AdminView 
+                  <Dashboard 
+                    user={user}
                     products={products} 
                     onAddProduct={handleAddProduct} 
                     onDeleteProduct={handleDeleteProduct} 
@@ -140,7 +147,6 @@ export default function App() {
                 )
               } 
             />
-
 
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -153,6 +159,8 @@ export default function App() {
         <BuyModal 
           isOpen={showBuy} 
           onClose={() => setShowBuy(false)} 
+          user={user}
+          product={selectedProduct}
         />
       </div>
     </Router>

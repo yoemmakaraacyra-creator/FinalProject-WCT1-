@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export default function ShopView({ products = [], onOpenBuy }) {
-  const [selectedCategory, setSelectedCategory] = useState("football");
+  const [activeCategory, setActiveCategory] = useState('all');
 
-  const filteredProducts = products.filter(
-    (item) => item.category === selectedCategory
-  );
-
+  const filteredProducts = activeCategory === 'all'
+    ? products
+    : products.filter((item) => item.category === activeCategory);
 
   const baseUrl = import.meta.env.BASE_URL;
 
@@ -20,28 +19,26 @@ export default function ShopView({ products = [], onOpenBuy }) {
   };
 
   return (
-    <section className="py-10 sm:py-14 px-4 sm:px-6 max-w-7xl mx-auto text-white">
-      <div className="flex justify-center gap-4 mb-10">
-        <button
-          onClick={() => setSelectedCategory("football")}
-          className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all cursor-pointer ${
-            selectedCategory === "football"
-              ? "bg-cyan-500 text-black shadow-lg shadow-cyan-500/20"
-              : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
-          }`}
-        >
-          ⚽ Football Boots
-        </button>
-        <button
-          onClick={() => setSelectedCategory("running")}
-          className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all cursor-pointer ${
-            selectedCategory === "running"
-              ? "bg-cyan-500 text-black shadow-lg shadow-cyan-500/20"
-              : "bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
-          }`}
-        >
-          🏃 Running Shoes
-        </button>
+    <section className="py-12 px-4 sm:px-8 max-w-7xl mx-auto text-white">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-extrabold text-cyan-400 mb-3">Our Collection</h1>
+        <p className="text-zinc-400">Choose your favorite sports performance gear.</p>
+        
+        <div className="flex justify-center gap-3 mt-6">
+          {['all', 'football', 'running'].map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`px-5 py-2 rounded-full font-semibold capitalize text-sm transition-all cursor-pointer ${
+                activeCategory === category
+                  ? 'bg-cyan-400 text-black shadow-lg shadow-cyan-400/20'
+                  : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -50,12 +47,11 @@ export default function ShopView({ products = [], onOpenBuy }) {
             key={product.id}
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between hover:border-zinc-700 transition-all group"
           >
-  
-            <div className="w-full h-48 bg-white rounded-xl mb-4 p-2 flex items-center justify-center overflow-hidden">
+            <div className="w-full h-48 bg-white rounded-xl p-3 flex items-center justify-center overflow-hidden mb-4">
               <img
                 src={getImageUrl(product.image)}
-                alt={product.title || product.name}
-                className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                alt={product.title}
+                className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = "https://via.placeholder.com/200x150?text=No+Image";
@@ -64,20 +60,22 @@ export default function ShopView({ products = [], onOpenBuy }) {
             </div>
 
             <div>
-              <h3 className="font-bold text-lg mb-1 text-white">
-                {product.title || product.name}
-              </h3>
-              <p className="text-cyan-400 font-extrabold text-xl mb-4">
-                ${typeof product.price === "number" ? product.price.toFixed(2) : product.price}
-              </p>
+              <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider block mb-1">
+                {product.category}
+              </span>
+              <h3 className="font-bold text-lg text-white mb-2 line-clamp-1">{product.title}</h3>
+              <div className="flex items-center justify-between mt-3">
+                <span className="text-xl font-extrabold text-white">
+                  ${typeof product.price === 'number' ? product.price.toFixed(2) : product.price}
+                </span>
+                <button
+                  onClick={() => onOpenBuy(product)}
+                  className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-4 py-2 rounded-lg text-sm transition-all cursor-pointer"
+                >
+                  Buy Now
+                </button>
+              </div>
             </div>
-
-            <button
-              onClick={() => onOpenBuy(product)}
-              className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-2.5 rounded-lg text-sm transition-all cursor-pointer"
-            >
-              Buy Now
-            </button>
           </div>
         ))}
       </div>

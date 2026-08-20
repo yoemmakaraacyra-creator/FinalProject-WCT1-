@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function AdminView({ products = [], onAddProduct, onDeleteProduct }) {
+export default function Dashboard({ products = [], onAddProduct, onDeleteProduct }) {
   const [formData, setFormData] = useState({
     title: "",
     category: "football",
